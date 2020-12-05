@@ -2,11 +2,16 @@ import 'dart:convert';
 
 import 'package:acenet_project/model/CustomerModel.dart';
 import 'package:acenet_project/model/SPKModel.dart';
+import 'package:acenet_project/models/index.dart';
+import 'package:acenet_project/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
   //baseURL
-  static String baseURL = "http://192.168.1.144/api/";
+  static String baseURL = "http://phpstack-346672-1621496.cloudwaysapps.com/api/";
+
+  SharedPreferences sp;
 
   var api = new http.Client();
 
@@ -47,4 +52,27 @@ class ApiServices {
 
     return SPKModel.fromJSON(jsonDecode(response.body));
   }
+
+  Future<LoginResponse> login(User user) async {
+
+    var url = "${baseURL}login";
+
+    var response = await api.post(url,
+        body: {
+          "username": user.username,
+          "password": user.password,
+        }
+    );
+
+    if(response.statusCode == 200) {
+      var data = LoginResponse.fromJson(jsonDecode(response.body));
+
+      return data;
+    }
+
+    return null;
+
+  }
+
+
 }

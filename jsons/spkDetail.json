@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "id_customer": 1,
+  "id_admin": 1,
+  "no_spk": "10012312",
+  "ket_pekerjaan": "ganti router",
+  "tgl_pekerjaan": "2020-12-01",
+  "jam_mulai": "14:51",
+  "jam_selesai": "14:51",
+  "download_speed": null,
+  "upload_speed": null,
+  "ket_lanjutan": "koneksi sudah stabil",
+  "status": "1",
+  "nama": "Made Made",
+  "jenis_layanan": "Silver",
+  "no_telp": "0912301923",
+  "alamat": "muding sari",
+  "tgl_instalasi": "2020-11-30",
+  "tgl_trial": "2020-11-30",
+  "teknisi": "$teknisi"
+}

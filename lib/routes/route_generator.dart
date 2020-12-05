@@ -1,5 +1,6 @@
 import 'package:acenet_project/views/form_spk_page.dart';
 import 'package:acenet_project/views/home_page.dart';
+import 'package:acenet_project/views/login_screen.dart';
 import 'package:acenet_project/views/today_task_page.dart';
 import 'package:acenet_project/views/upcoming_page.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,10 @@ class RouteGenerator {
 
       case '/today':
         return MaterialPageRoute(builder: (_) => TodayTaskPage());
+
+
+      case '/login':
+        return MaterialPageRoute(builder: (_) => LoginScreen());
 
       case '/upcoming':
         // if (args is String) {

@@ -41,6 +41,7 @@ class _FormSPKState extends State<FormSPK> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(title: Text("Surat Perintah Kerja Digital")),
       drawer: myDrawer(),
       body: loading
@@ -48,6 +49,7 @@ class _FormSPKState extends State<FormSPK> {
           : Padding(
               padding: EdgeInsets.fromLTRB(8.0, 5.0, 8.0, 5.0),
               child: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.fromLTRB(0, 10.0, 0, 15.0),
@@ -139,6 +141,23 @@ class _FormSPKState extends State<FormSPK> {
                     ),
                   ),
                   Padding(
+                    padding: EdgeInsets.only(bottom: 15.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: 100.0),
+                      child: TextFormField(
+                        maxLines: null,
+                        enabled: true,
+                        initialValue: spk.keterangan,
+                        decoration: InputDecoration(
+                          labelText: "Keterangan",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
                       padding: EdgeInsets.fromLTRB(0, 10.0, 0, 10.0),
                       child: Text(
                         "Tanda Tangan",
@@ -158,13 +177,36 @@ class _FormSPKState extends State<FormSPK> {
                             splashColor: Colors.redAccent,
                           ),
                         )
-                      : Row(children: <Widget>[
+                      : Column(
+                        children: [
+                          Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+
+                          children: <Widget>[
+                              Container(
+                                height: 80.0,
+                                alignment: Alignment.center,
+                                child: Image.memory(data),
+                              ),
+                            ]),
                           Container(
-                            width: 80.0,
-                            alignment: Alignment.center,
-                            child: Image.memory(data),
-                          ),
-                        ]),
+                            margin: EdgeInsets.only(top: 16),
+                            padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 5.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width - 32,
+                              child: new MaterialButton(
+                                height: 40.0,
+                                minWidth: 20.0,
+                                color: Theme.of(context).primaryColor,
+                                textColor: Colors.white,
+                                child: new Text("Change Sign"),
+                                onPressed: () => testKirim(context),
+                                splashColor: Colors.redAccent,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                 ],
               ),
             ),

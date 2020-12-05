@@ -32,10 +32,24 @@ dependencies:
   signature: ^3.2.0
   http: ^0.12.2
 
+
+  # JSON Model
+  json_annotation:
+  json_model:
+
+  # Share Preference
+  shared_preferences:
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  # JSON Model
+  build_runner: ^1.0.0
+
+  # JSON Serializable
+  json_serializable:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

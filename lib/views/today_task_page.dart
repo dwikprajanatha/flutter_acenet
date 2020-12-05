@@ -61,6 +61,7 @@ class _TodayTaskPageState extends State<TodayTaskPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("test");
     _getSPK(1);
   }
 
@@ -73,18 +74,23 @@ class _TodayTaskPageState extends State<TodayTaskPage> {
         margin: EdgeInsets.all(10.0),
         child: loading
             ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, i) {
-                  var data = list[i];
-                  return CardLayout(
-                    pekerjaan: data.ket_pekerjaan,
-                    waktu: data.jam_mulai,
-                    pelanggan: data.nama,
-                    idPekerjaan: int.parse(data.id),
-                  );
-                },
-              ),
+            : RefreshIndicator(
+              onRefresh: () async {
+                 await _getSPK(1);
+              },
+              child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (context, i) {
+                    var data = list[i];
+                    return CardLayout(
+                      pekerjaan: data.ket_pekerjaan,
+                      waktu: data.jam_mulai,
+                      pelanggan: data.nama,
+                      idPekerjaan: int.parse(data.id),
+                    );
+                  },
+                ),
+            ),
       ),
     );
   }

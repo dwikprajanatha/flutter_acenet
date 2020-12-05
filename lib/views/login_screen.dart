@@ -1,4 +1,8 @@
+import 'package:acenet_project/API/ApiServices.dart';
+import 'package:acenet_project/models/index.dart';
+import 'package:acenet_project/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -6,6 +10,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  var usernameField = TextEditingController();
+  var passwordField = TextEditingController();
+  Future loginMethod() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    print(usernameField.text);
+    print(passwordField.text);
+    User user = User();
+    user.username = usernameField.text;
+    user.password = passwordField.text;
+
+    LoginResponse response = await ApiServices().login(user);
+    if(response.success) {
+      sp.setString("API_KEY", response.data.access_token);
+      sp.setString("USER_ID", response.data.id.toString());
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/dashboard', (Route<dynamic> route) => false);
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               Radius.circular(12.0)),
                                           borderSide:
                                               BorderSide(color: Colors.grey))),
+                                  controller: usernameField,
                                 ),
                               ),
                               Padding(
@@ -87,6 +113,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   autofocus: false,
                                   obscureText: true,
                                   style: TextStyle(fontSize: 20.0),
+                                  controller: passwordField,
+
                                   decoration: InputDecoration(
                                       filled: true,
                                       hintText: "Password",
@@ -107,7 +135,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               Padding(
                                 padding: EdgeInsets.only(top: 20.0),
                                 child: MaterialButton(
-                                  onPressed: () {},
+                                  onPressed: ()  async {
+                                    await loginMethod();
+                                  },
                                   minWidth: 40.0,
                                   splashColor: Colors.grey[300],
                                   color: Colors.grey,

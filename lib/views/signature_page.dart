@@ -15,28 +15,32 @@ class _SignaturePageState extends State<SignaturePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: ListView(
-        children: <Widget>[
-          Signature(
-            controller: _controller,
-            height: MediaQuery.of(context).size.height - 50.0,
-            backgroundColor: Colors.white,
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          color: Colors.red,
+          child: ListView(
+            children: <Widget>[
+              Signature(
+                controller: _controller,
+                height: MediaQuery.of(context).size.height - 70.0,
+                backgroundColor: Colors.white,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 5.0),
+                child: new MaterialButton(
+                  height: 40.0,
+                  minWidth: 20.0,
+                  color: Theme.of(context).primaryColor,
+                  textColor: Colors.white,
+                  child: new Text("Selesai"),
+                  onPressed: () => testAc(_controller.toPngBytes()),
+                  splashColor: Colors.redAccent,
+                ),
+              )
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 5.0),
-            child: new MaterialButton(
-              height: 40.0,
-              minWidth: 20.0,
-              color: Theme.of(context).primaryColor,
-              textColor: Colors.white,
-              child: new Text("Selesai"),
-              onPressed: () => testAc(_controller.toPngBytes()),
-              splashColor: Colors.redAccent,
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
