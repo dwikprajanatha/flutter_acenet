@@ -1,7 +1,48 @@
+import 'package:acenet_project/API/ApiServices.dart';
 import 'package:acenet_project/drawer/drawer_layout.dart';
+import 'package:acenet_project/models/index.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var loading = true;
+  JobDoneCount jobCount = JobDoneCount();
+  List list = new List<SpkDetail>();
+  _getJobCount(int idTeknisi) async {
+    // list.clear();
+
+    await ApiServices().getJobCounting(idTeknisi).then((value) {
+      setState(() {
+        jobCount = value;
+        loading = false;
+      });
+    });
+  }
+
+  _getTodayTask(int idTeknisi) async {
+    // list.clear();
+
+    await ApiServices().getSPK(idTeknisi).then((value) {
+      setState(() {
+        list = value;
+        loading = false;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _getJobCount(1);
+    _getTodayTask(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,43 +50,53 @@ class HomePage extends StatelessWidget {
       drawer: myDrawer(),
       body: Container(
         margin: EdgeInsets.all(10.0),
-        child: ListView(
-          children: <Widget>[
-            // JOB COUNT //
-            Padding(
-              padding: EdgeInsets.fromLTRB(5.0, 5.0, 0, 8.0),
-              child: Text(
-                "Job Count",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await _getJobCount(1);
+            await _getTodayTask(1);
+
+          },
+          child: ListView(
+            children: <Widget>[
+              // JOB COUNT //
+              Padding(
+                padding: EdgeInsets.fromLTRB(5.0, 5.0, 0, 8.0),
+                child: Text(
+                  "Job Count",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+                ),
               ),
-            ),
-            Row(
-              children: [
-                Flexible(fit: FlexFit.tight, child: JobCountCard()),
-                Flexible(fit: FlexFit.tight, child: JobCountCard()),
-              ],
-            ),
-            // TODAY TASK //
-            Padding(
-              padding: EdgeInsets.fromLTRB(5.0, 15.0, 0, 10.0),
-              child: Text(
-                "Today Task",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+              Row(
+                children: [
+                  Flexible(fit: FlexFit.tight, child: JobCountCard("This Week", jobCount != null ? jobCount.weekly_count : 0)),
+                  Flexible(fit: FlexFit.tight, child: JobCountCard("This Month",jobCount != null ? jobCount.monthly_count : 0)),
+                ],
               ),
-            ),
-            CardLayout(
-              pekerjaan: "Balabala",
-              waktu: "1 April 2020 09.00",
-              pelanggan: "Mr. Dony",
-              idPekerjaan: 1,
-            ),
-            CardLayout(
-              pekerjaan: "Balabala",
-              waktu: "1 April 2020 09.00",
-              pelanggan: "Mr. Dony",
-              idPekerjaan: 2,
-            ),
-          ],
+              // TODAY TASK //
+              Padding(
+                padding: EdgeInsets.fromLTRB(5.0, 15.0, 0, 10.0),
+                child: Text(
+                  "Today Task",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+                ),
+              ),
+              loading
+                  ? Center(child: CircularProgressIndicator())
+                  : list.length > 0 ?
+                  Column(
+                    children: list.map((data){
+                      return CardLayout(
+                        pekerjaan: data.ket_pekerjaan,
+                        waktu: data.jam_mulai,
+                        pelanggan: data.nama,
+                        idPekerjaan: int.parse(data.id),
+                      );
+                    }).toList(),
+                  ): Center(
+                child: Text("No Task for Today."),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -157,6 +208,9 @@ class CardLayout extends StatelessWidget {
 }
 
 class JobCountCard extends StatelessWidget {
+  String label = "";
+  int count = 0;
+  JobCountCard(this.label,this.count);
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -169,8 +223,10 @@ class JobCountCard extends StatelessWidget {
               "Work Done",
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
             ),
-            Text("10",
+            Text(count.toString(),
                 style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w500)),
+            Text(label,
+                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400)),
           ],
         ),
       ),

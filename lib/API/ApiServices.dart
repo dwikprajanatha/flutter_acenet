@@ -24,23 +24,65 @@ class ApiServices {
     return CustomerModel.fromJson(json.decode(response.body));
   }
 
-  Future<List<SPKModel>> getSPK(int idTeknisi) async {
-    var url = "${baseURL}getSPK?id_teknisi=${idTeknisi}";
+  Future<List<SpkDetail>> getSPK(int idTeknisi) async {
+    sp = await SharedPreferences.getInstance();
 
-    print(url);
+    var token = sp.get("API_KEY");
+    var id_teknisi = sp.get("USER_ID");
 
-    var response = await api.get(url);
+    var url = "${baseURL}getSPK?id_teknisi=${id_teknisi}";
+    Map<String, String>  header = {
+      "Authorization" : "Bearer ${token}"
+    };
+    print(header);
+    var response = await api.get(url,
+        headers: header);
 
     var jsonObject = json.decode(response.body);
+    print(response.body);
 
-    List<dynamic> listSPK = jsonObject;
+    var body = SpkResponse.fromJson(jsonObject);
+    return body.data;
+  }
 
-    List<SPKModel> spk = [];
-    listSPK.forEach((element) {
-      spk.add(SPKModel.fromJSON(element));
-    });
+  Future<List<SpkDetail>> getUpcomingSPK(int idTeknisi) async {
+    sp = await SharedPreferences.getInstance();
 
-    return spk;
+    var token = sp.get("API_KEY");
+    var id_teknisi = sp.get("USER_ID");
+
+    var url = "${baseURL}getUpcomingSPK?id_teknisi=${id_teknisi}";
+    Map<String, String>  header = {
+      "Authorization" : "Bearer ${token}"
+    };
+    print(header);
+    var response = await api.get(url,
+        headers: header);
+    var jsonObject = json.decode(response.body);
+    print(response.body);
+
+    var body = SpkResponse.fromJson(jsonObject);
+    return body.data;
+  }
+
+  Future<JobDoneCount> getJobCounting(int idTeknisi) async {
+    sp = await SharedPreferences.getInstance();
+
+    var token = sp.get("API_KEY");
+    var id_teknisi = sp.get("USER_ID");
+
+    var url = "${baseURL}jobCount?id_teknisi=${id_teknisi}";
+    Map<String, String>  header = {
+      "Authorization" : "Bearer ${token}"
+    };
+    print(header);
+    var response = await api.get(url,
+        headers: header);
+    var jsonObject = json.decode(response.body);
+    print(response.body);
+
+    var body = JobDoneResponse.fromJson(jsonObject);
+    return body.data;
   }
 
   Future<SPKModel> getDetailSPK(int idSPK) async {
