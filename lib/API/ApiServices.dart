@@ -111,6 +111,7 @@ class ApiServices {
         body: {
           "username": user.username,
           "password": user.password,
+          "device_id": user.access_token,
         }
     );
 

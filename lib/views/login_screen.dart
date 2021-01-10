@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
     User user = User();
     user.username = usernameField.text;
     user.password = passwordField.text;
-
+    user.access_token = fcmToken;
     LoginResponse response = await ApiServices().login(user);
     print(response);
     if(response.success) {
