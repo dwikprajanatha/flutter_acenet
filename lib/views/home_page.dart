@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:acenet_project/API/ApiServices.dart';
 import 'package:acenet_project/drawer/drawer_layout.dart';
 import 'package:acenet_project/models/index.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,10 +17,114 @@ class _HomePageState extends State<HomePage> {
   var loading = true;
   JobDoneCount jobCount = JobDoneCount();
   List list = new List<SpkDetail>();
-  _getJobCount(int idTeknisi) async {
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  final scaffoldState = GlobalKey<ScaffoldState>();
+  final firebaseMessaging = FirebaseMessaging();
+  final controllerTopic = TextEditingController();
+  bool isSubscribed = false;
+  String token = '';
+
+  static Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) {
+    // showNotificationForeground(message);
+    return null;
+  }
+
+  Future<dynamic> showNotificationForeground(Map<String, dynamic> message) async{
+    String title ="";
+    String body = "";
+
+    try {
+      final dynamic notification = message['notification'] ?? message;
+      print(notification);
+      title = notification['title']??message['title'];
+      body = notification['body']??message['body'];
+      final dynamic data = message['data']??message;
+
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+          'channel-fcm', 'Notification', 'Push Notification',
+          importance: Importance.Max,
+          priority: Priority.High,
+          ticker: 'ticker');
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+      var platformChannelSpecifics = NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      await flutterLocalNotificationsPlugin.show(
+          0, title, body, platformChannelSpecifics,
+          payload: json.encode(data));
+    } catch(e) {
+      print("ERROR : ");
+      print(e);
+    }
+
+  }
+
+  initLocalNotification(){
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+
+  }
+  Future onSelectNotification(String dataJSON) async {
+    Navigator.pushNamed(context, "/upcoming");
+  }
+  void getDataFcm(Map<String, dynamic> message) {
+    String name = '';
+    String age = '';
+    if (Platform.isIOS) {
+
+    } else if (Platform.isAndroid) {
+      var data = message['data'];
+
+    }
+    if (name.isNotEmpty && age.isNotEmpty) {
+      setState(() {
+
+      });
+    }
+    debugPrint('getDataFcm: name: $name & age: $age');
+  }
+
+  initFcm() {
+    firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showNotificationForeground(message);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        final dynamic data = message['data'] ?? message;
+        Navigator.pushNamed(context, "/upcoming");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        final dynamic data = message['data'] ?? message;
+        Navigator.pushNamed(context, "/upcoming");
+      },
+    );
+    firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(
+            sound: true, badge: true, alert: true, provisional: true));
+    firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+    firebaseMessaging.getToken().then((String token) {
+      assert(token != null);
+      print("Push Messaging token: $token");
+    });
+  }
+
+  _getJobCount() async {
     // list.clear();
 
-    await ApiServices().getJobCounting(idTeknisi).then((value) {
+    await ApiServices().getJobCounting().then((value) {
       setState(() {
         jobCount = value;
         loading = false;
@@ -23,10 +132,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  _getTodayTask(int idTeknisi) async {
+  _getTodayTask() async {
     // list.clear();
 
-    await ApiServices().getSPK(idTeknisi).then((value) {
+    await ApiServices().getSPK().then((value) {
       setState(() {
         list = value;
         loading = false;
@@ -37,10 +146,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
 
-    _getJobCount(1);
-    _getTodayTask(1);
+    super.initState();
+    initFcm();
+
+    initLocalNotification();
+
+    _getJobCount();
+    _getTodayTask();
   }
 
   @override
@@ -52,8 +165,8 @@ class _HomePageState extends State<HomePage> {
         margin: EdgeInsets.all(10.0),
         child: RefreshIndicator(
           onRefresh: () async {
-            await _getJobCount(1);
-            await _getTodayTask(1);
+            await _getJobCount();
+            await _getTodayTask();
 
           },
           child: ListView(
@@ -89,7 +202,7 @@ class _HomePageState extends State<HomePage> {
                         pekerjaan: data.ket_pekerjaan,
                         waktu: data.jam_mulai,
                         pelanggan: data.nama,
-                        idPekerjaan: int.parse(data.id),
+                        idPekerjaan: (data.id),
                       );
                     }).toList(),
                   ): Center(
@@ -223,7 +336,7 @@ class JobCountCard extends StatelessWidget {
               "Work Done",
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
             ),
-            Text(count.toString(),
+            Text(count != null && count != "null" ? count.toString() : "-",
                 style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w500)),
             Text(label,
                 style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400)),

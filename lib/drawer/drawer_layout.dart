@@ -34,7 +34,7 @@ class myDrawer extends StatelessWidget {
               icon: Icons.work, title: "Today Task", onTap: "/today"),
           CustomListTile(
               icon: Icons.update, title: "Upcoming Task", onTap: "/upcoming"),
-          CustomListTile(icon: Icons.web, title: "Report", onTap: ""),
+          CustomListTile(icon: Icons.web, title: "Report", onTap: "/history"),
           CustomListTile(
               icon: Icons.account_circle, title: "Profile", onTap: ""),
         ],

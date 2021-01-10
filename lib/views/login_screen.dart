@@ -1,6 +1,7 @@
 import 'package:acenet_project/API/ApiServices.dart';
 import 'package:acenet_project/models/index.dart';
 import 'package:acenet_project/models/user.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,9 +11,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   var usernameField = TextEditingController();
   var passwordField = TextEditingController();
+  var fcmToken = null;
   Future loginMethod() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     print(usernameField.text);
@@ -22,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     user.password = passwordField.text;
 
     LoginResponse response = await ApiServices().login(user);
+    print(response);
     if(response.success) {
       sp.setString("API_KEY", response.data.access_token);
       sp.setString("USER_ID", response.data.id.toString());
@@ -31,6 +35,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _firebaseMessaging.getToken().then((String token) {
+      fcmToken = token;
+      print(fcmToken);
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

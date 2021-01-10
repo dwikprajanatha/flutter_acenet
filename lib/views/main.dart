@@ -10,11 +10,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Test Program",
+      title: "Acenet",
       theme: ThemeData(
         primaryColor: Colors.red[900],
       ),
-      initialRoute: '/login',
+      initialRoute: '/splashscreen',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

@@ -55,7 +55,7 @@ class _UpcomingTaskPageState extends State<UpcomingTaskPage> {
                 pekerjaan: data.ket_pekerjaan,
                 waktu: data.jam_mulai,
                 pelanggan: data.nama,
-                idPekerjaan: int.parse(data.id),
+                idPekerjaan: (data.id),
               );
             },
           ),

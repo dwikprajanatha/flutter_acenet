@@ -17,5 +17,5 @@
   "alamat": "muding sari",
   "tgl_instalasi": "2020-11-30",
   "tgl_trial": "2020-11-30",
-  "teknisi": "$teknisi"
+  "teknisi": "$[]teknisi"
 }

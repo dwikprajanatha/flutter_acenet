@@ -24,7 +24,7 @@ class SpkDetail {
     String alamat;
     String tgl_instalasi;
     String tgl_trial;
-    Teknisi teknisi;
+    List<Teknisi> teknisi;
     
     factory SpkDetail.fromJson(Map<String,dynamic> json) => _$SpkDetailFromJson(json);
     Map<String, dynamic> toJson() => _$SpkDetailToJson(this);

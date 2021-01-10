@@ -39,7 +39,11 @@ dependencies:
 
   # Share Preference
   shared_preferences:
+  #FCM
+  firebase_messaging: ^6.0.9
 
+  #Local Notification
+  flutter_local_notifications: ^0.9.1+2
 
 dev_dependencies:
   flutter_test:
