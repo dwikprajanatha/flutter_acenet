@@ -17,10 +17,10 @@ class _TodayTaskPageState extends State<TodayTaskPage> {
   List list = new List<SpkDetail>();
   var loading = true;
 
-  _getSPK(int idTeknisi) async {
+  _getSPK() async {
     // list.clear();
 
-    await ApiServices().getSPK(idTeknisi).then((value) {
+    await ApiServices().getSPK().then((value) {
       setState(() {
         list = value;
         loading = false;
@@ -33,7 +33,7 @@ class _TodayTaskPageState extends State<TodayTaskPage> {
     // TODO: implement initState
     super.initState();
     print("test");
-    _getSPK(1);
+    _getSPK();
   }
 
   @override
@@ -47,7 +47,7 @@ class _TodayTaskPageState extends State<TodayTaskPage> {
             ? Center(child: CircularProgressIndicator())
             : list.length > 0 ? RefreshIndicator(
           onRefresh: () async {
-            await _getSPK(1);
+            await _getSPK();
           },
           child: ListView.builder(
             itemCount: list.length,

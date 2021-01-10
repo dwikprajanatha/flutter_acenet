@@ -1,6 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class myDrawer extends StatelessWidget {
+class myDrawer extends StatefulWidget {
+
+  @override
+  _myDrawerState createState() => _myDrawerState();
+
+}
+
+class _myDrawerState extends State<myDrawer> {
+  String nama = "-";
+  SharedPreferences sharedPreferences ;
+
+  _getData() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      if (sharedPreferences.getString("USER_NAME") != null)
+        nama = sharedPreferences.getString("USER_NAME");
+    });
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -21,7 +47,7 @@ class myDrawer extends StatelessWidget {
                       )),
                   Padding(
                     padding: EdgeInsets.only(top: 12.0),
-                    child: Text("Dwik Prajanatha",
+                    child: Text(nama,
                         style: TextStyle(color: Colors.white, fontSize: 18.0)),
                   )
                 ],
@@ -36,7 +62,7 @@ class myDrawer extends StatelessWidget {
               icon: Icons.update, title: "Upcoming Task", onTap: "/upcoming"),
           CustomListTile(icon: Icons.web, title: "Report", onTap: "/history"),
           CustomListTile(
-              icon: Icons.account_circle, title: "Profile", onTap: ""),
+              icon: Icons.account_circle, title: "Profile", onTap: "/profile"),
         ],
       ),
     );

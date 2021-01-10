@@ -2,6 +2,7 @@ import 'package:acenet_project/views/form_spk_page.dart';
 import 'package:acenet_project/views/history_page.dart';
 import 'package:acenet_project/views/home_page.dart';
 import 'package:acenet_project/views/login_screen.dart';
+import 'package:acenet_project/views/profile.dart';
 import 'package:acenet_project/views/splashscreen.dart';
 import 'package:acenet_project/views/today_task_page.dart';
 import 'package:acenet_project/views/upcoming_page.dart';
@@ -27,6 +28,9 @@ class RouteGenerator {
 
       case '/login':
         return MaterialPageRoute(builder: (_) => LoginScreen());
+
+      case '/profile':
+        return MaterialPageRoute(builder: (_) => ProfilePage());
 
       case '/upcoming':
         // if (args is String) {

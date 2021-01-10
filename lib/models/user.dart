@@ -9,8 +9,10 @@ class User {
     String nama;
     String avatar;
     num id;
+    String email;
     String username;
     String password;
+    String no_telp;
     String access_token;
     
     factory User.fromJson(Map<String,dynamic> json) => _$UserFromJson(json);

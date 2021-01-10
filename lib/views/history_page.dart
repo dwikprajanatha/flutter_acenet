@@ -1,6 +1,7 @@
 import 'package:acenet_project/API/ApiServices.dart';
 import 'package:acenet_project/drawer/drawer_layout.dart';
 import 'package:acenet_project/models/index.dart';
+import 'package:acenet_project/views/upcoming_page.dart';
 import 'package:flutter/material.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -12,10 +13,10 @@ class _HistoryPageState extends State<HistoryPage> {
   var loading = true;
   JobDoneCount jobCount = JobDoneCount();
   List list = new List<SpkDetail>();
-  _getJobCount(int idTeknisi) async {
+  _getJobCount() async {
     // list.clear();
 
-    await ApiServices().getJobCounting(idTeknisi).then((value) {
+    await ApiServices().getJobCounting().then((value) {
       setState(() {
         jobCount = value;
         loading = false;
@@ -23,7 +24,7 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
-  _getTodayTask(int idTeknisi) async {
+  _getJobDone() async {
     // list.clear();
 
     await ApiServices().getJobDone().then((value) {
@@ -39,8 +40,8 @@ class _HistoryPageState extends State<HistoryPage> {
     // TODO: implement initState
     super.initState();
 
-    _getJobCount(1);
-    _getTodayTask(1);
+    _getJobCount();
+    _getJobDone();
   }
 
   @override
@@ -52,8 +53,8 @@ class _HistoryPageState extends State<HistoryPage> {
         margin: EdgeInsets.all(10.0),
         child: RefreshIndicator(
           onRefresh: () async {
-            await _getJobCount(1);
-            await _getTodayTask(1);
+            await _getJobCount();
+            await _getJobDone();
 
           },
           child: ListView(
@@ -76,7 +77,7 @@ class _HistoryPageState extends State<HistoryPage> {
               Padding(
                 padding: EdgeInsets.fromLTRB(5.0, 15.0, 0, 10.0),
                 child: Text(
-                  "Today Task",
+                  "Completed Task",
                   style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
                 ),
               ),
@@ -85,15 +86,15 @@ class _HistoryPageState extends State<HistoryPage> {
                   : list.length > 0 ?
               Column(
                 children: list.map((data){
-                  return CardLayout(
+                  return UpcomingCardLayout(
                     pekerjaan: data.ket_pekerjaan,
-                    waktu: data.jam_mulai,
+                    waktu: data.tgl_pekerjaan+" "+data.jam_mulai,
                     pelanggan: data.nama,
                     idPekerjaan: (data.id),
                   );
                 }).toList(),
               ): Center(
-                child: Text("No Task for Today."),
+                child: Text("No Completed."),
               ),
             ],
           ),

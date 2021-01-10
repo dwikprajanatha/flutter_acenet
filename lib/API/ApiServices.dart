@@ -46,7 +46,7 @@ class ApiServices {
     return body.data;
   }
 
-  Future<List<SpkDetail>> getUpcomingSPK(int idTeknisi) async {
+  Future<List<SpkDetail>> getUpcomingSPK() async {
     sp = await SharedPreferences.getInstance();
 
     var token = sp.get("API_KEY");
@@ -186,6 +186,26 @@ class ApiServices {
     print(response.body);
 
     var body = SpkResponse.fromJson(jsonObject);
+    return body.data;
+  }
+
+  Future<User> getProfile() async {
+    sp = await SharedPreferences.getInstance();
+
+    var token = sp.get("API_KEY");
+
+    var url = "${baseURL}getProfile";
+    Map<String, String>  header = {
+      "Authorization" : "Bearer ${token}"
+    };
+    print(header);
+    var response = await api.get(url,
+        headers: header);
+
+    var jsonObject = json.decode(response.body);
+    print(response.body);
+
+    var body = LoginResponse.fromJson(jsonObject);
     return body.data;
   }
 

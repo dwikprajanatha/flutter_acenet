@@ -29,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if(response.success) {
       sp.setString("API_KEY", response.data.access_token);
       sp.setString("USER_ID", response.data.id.toString());
+      sp.setString("USER_NAME", response.data.nama.toString());
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/dashboard', (Route<dynamic> route) => false);
     }
