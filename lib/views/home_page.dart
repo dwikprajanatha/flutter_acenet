@@ -26,21 +26,19 @@ class _HomePageState extends State<HomePage> {
   bool isSubscribed = false;
   String token = '';
 
-  static Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) {
-    // showNotificationForeground(message);
-    return null;
-  }
-
-  Future<dynamic> showNotificationForeground(Map<String, dynamic> message) async{
-    String title ="";
+  Future<dynamic> showNotificationForeground(
+      Map<String, dynamic> message) async {
+    String title = "";
     String body = "";
 
     try {
-      final dynamic notification = message['notification'] ?? message;
+      final dynamic notification = message['data'] ?? message;
       print(notification);
-      title = notification['title']??message['title'];
-      body = notification['body']??message['body'];
-      final dynamic data = message['data']??message;
+      title = notification['title'];
+      body = notification['body'];
+
+      print(title);
+      print(body);
 
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
           'channel-fcm', 'Notification', 'Push Notification',
@@ -51,42 +49,37 @@ class _HomePageState extends State<HomePage> {
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(
-          0, title, body, platformChannelSpecifics,
-          payload: json.encode(data));
-    } catch(e) {
+          0, title, body, platformChannelSpecifics);
+    } catch (e) {
       print("ERROR : ");
       print(e);
     }
-
   }
 
-  initLocalNotification(){
+  initLocalNotification() {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid =
-    new AndroidInitializationSettings('@mipmap/ic_launcher');
+        new AndroidInitializationSettings('@mipmap/launcher_icon');
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
-
   }
+
   Future onSelectNotification(String dataJSON) async {
     Navigator.pushNamed(context, "/upcoming");
   }
+
   void getDataFcm(Map<String, dynamic> message) {
     String name = '';
     String age = '';
     if (Platform.isIOS) {
-
     } else if (Platform.isAndroid) {
       var data = message['data'];
-
     }
     if (name.isNotEmpty && age.isNotEmpty) {
-      setState(() {
-
-      });
+      setState(() {});
     }
     debugPrint('getDataFcm: name: $name & age: $age');
   }
@@ -107,6 +100,7 @@ class _HomePageState extends State<HomePage> {
         final dynamic data = message['data'] ?? message;
         Navigator.pushNamed(context, "/upcoming");
       },
+      onBackgroundMessage: onBackgroundMessageHandler,
     );
     firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
@@ -119,6 +113,36 @@ class _HomePageState extends State<HomePage> {
       assert(token != null);
       print("Push Messaging token: $token");
     });
+  }
+
+  static Future<dynamic> onBackgroundMessageHandler(Map<String, dynamic> message) async{
+    print("onBackgroundMessage : $message");
+    // _HomePageState().showNotificationForeground(message);
+
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/launcher_icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: null);
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'channel-fcm', 'Notification', 'Push Notification',
+        importance: Importance.Max,
+        priority: Priority.High,
+        ticker: 'ticker');
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, message['data']['title'], message['data']['body'], platformChannelSpecifics);
+
+
+// return null;
   }
 
   _getJobCount() async {
@@ -167,7 +191,6 @@ class _HomePageState extends State<HomePage> {
           onRefresh: () async {
             await _getJobCount();
             await _getTodayTask();
-
           },
           child: ListView(
             children: <Widget>[
@@ -181,8 +204,14 @@ class _HomePageState extends State<HomePage> {
               ),
               Row(
                 children: [
-                  Flexible(fit: FlexFit.tight, child: JobCountCard("This Week", jobCount != null ? jobCount.weekly_count : 0)),
-                  Flexible(fit: FlexFit.tight, child: JobCountCard("This Month",jobCount != null ? jobCount.monthly_count : 0)),
+                  Flexible(
+                      fit: FlexFit.tight,
+                      child: JobCountCard("This Week",
+                          jobCount != null ? jobCount.weekly_count : 0)),
+                  Flexible(
+                      fit: FlexFit.tight,
+                      child: JobCountCard("This Month",
+                          jobCount != null ? jobCount.monthly_count : 0)),
                 ],
               ),
               // TODAY TASK //
@@ -195,19 +224,20 @@ class _HomePageState extends State<HomePage> {
               ),
               loading
                   ? Center(child: CircularProgressIndicator())
-                  : list.length > 0 ?
-                  Column(
-                    children: list.map((data){
-                      return CardLayout(
-                        pekerjaan: data.ket_pekerjaan,
-                        waktu: data.jam_mulai,
-                        pelanggan: data.nama,
-                        idPekerjaan: (data.id),
-                      );
-                    }).toList(),
-                  ): Center(
-                child: Text("No Task for Today."),
-              ),
+                  : list.length > 0
+                      ? Column(
+                          children: list.map((data) {
+                            return CardLayout(
+                              pekerjaan: data.ket_pekerjaan,
+                              waktu: data.jam_mulai,
+                              pelanggan: data.nama,
+                              idPekerjaan: (data.id),
+                            );
+                          }).toList(),
+                        )
+                      : Center(
+                          child: Text("No Task for Today."),
+                        ),
             ],
           ),
         ),
@@ -215,6 +245,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 
 class CardLayout extends StatelessWidget {
   String waktu, pekerjaan, pelanggan;
@@ -323,7 +354,7 @@ class CardLayout extends StatelessWidget {
 class JobCountCard extends StatelessWidget {
   String label = "";
   int count = 0;
-  JobCountCard(this.label,this.count);
+  JobCountCard(this.label, this.count);
   @override
   Widget build(BuildContext context) {
     return Card(

@@ -10,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
   //baseURL
-  static String baseURL = "http://phpstack-521315-1659119.cloudwaysapps.com/api/";
+  static String baseURL =
+      "http://phpstack-521315-1659119.cloudwaysapps.com/api/";
 
   SharedPreferences sp;
 
@@ -32,12 +33,9 @@ class ApiServices {
     var id_teknisi = sp.get("USER_ID");
 
     var url = "${baseURL}getSPK?id_teknisi=${id_teknisi}";
-    Map<String, String>  header = {
-      "Authorization" : "Bearer ${token}"
-    };
+    Map<String, String> header = {"Authorization": "Bearer ${token}"};
     print(header);
-    var response = await api.get(url,
-        headers: header);
+    var response = await api.get(url, headers: header);
 
     var jsonObject = json.decode(response.body);
     print(response.body);
@@ -53,12 +51,9 @@ class ApiServices {
     var id_teknisi = sp.get("USER_ID");
 
     var url = "${baseURL}getUpcomingSPK?id_teknisi=${id_teknisi}";
-    Map<String, String>  header = {
-      "Authorization" : "Bearer ${token}"
-    };
+    Map<String, String> header = {"Authorization": "Bearer ${token}"};
     print(header);
-    var response = await api.get(url,
-        headers: header);
+    var response = await api.get(url, headers: header);
     var jsonObject = json.decode(response.body);
     print(response.body);
 
@@ -73,12 +68,9 @@ class ApiServices {
     var id_teknisi = sp.get("USER_ID");
 
     var url = "${baseURL}jobCount?id_teknisi=${id_teknisi}";
-    Map<String, String>  header = {
-      "Authorization" : "Bearer ${token}"
-    };
+    Map<String, String> header = {"Authorization": "Bearer ${token}"};
     print(header);
-    var response = await api.get(url,
-        headers: header);
+    var response = await api.get(url, headers: header);
     var jsonObject = json.decode(response.body);
     print(response.body);
 
@@ -93,58 +85,52 @@ class ApiServices {
     var id_teknisi = sp.get("USER_ID");
     print(token);
     var url = "${baseURL}getDetailSPK?id_spk=${idSPK}";
-    Map<String, String>  header = {
-      "Authorization" : "Bearer ${token}"
-    };
+    Map<String, String> header = {"Authorization": "Bearer ${token}"};
     print(header);
-    var response = await api.get(url,
-        headers: header);
+    var response = await api.get(url, headers: header);
 
     return SpkDetailResponse.fromJson(json.decode(response.body));
   }
 
   Future<LoginResponse> login(User user) async {
-
     var url = "${baseURL}login";
 
-    var response = await api.post(url,
-        body: {
-          "username": user.username,
-          "password": user.password,
-          "device_id": user.access_token,
-        }
-    );
+    var response = await api.post(url, body: {
+      "username": user.username,
+      "password": user.password,
+      "device_id": user.access_token,
+    });
 
     print(url);
     print(response.statusCode);
     print(response.body);
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       var data = LoginResponse.fromJson(jsonDecode(response.body));
 
       return data;
     }
 
     return null;
-
   }
 
-  Future<SpkResponse> submitSPK(Map<String,dynamic> body) async {
+  Future<SpkResponse> submitSPK(Map<String, dynamic> body) async {
     // Get user profile for id
     sp = await SharedPreferences.getInstance();
     String token = sp.get("API_KEY");
 
-    var request = new http.MultipartRequest("POST",Uri.parse(baseURL+'post/submitSPK'));
-    request.headers.addAll({ "Authorization": "Bearer ${token}"});
+    var request = new http.MultipartRequest(
+        "POST", Uri.parse(baseURL + 'post/submitSPK'));
+    request.headers.addAll({"Authorization": "Bearer ${token}"});
 
     print(Uri.parse('$baseURL/post/submitSPK'));
-    var signCustomer =  http.MultipartFile.fromBytes(
+    var signCustomer = http.MultipartFile.fromBytes(
       'signCustomer',
       body['signCustomer'],
       filename: "Customer.png",
     );
 
-    var signTeknisi =   http.MultipartFile.fromBytes(
+    var signTeknisi = http.MultipartFile.fromBytes(
       'signTeknisi',
       body['signTeknisi'],
       filename: "Teknisi.png",
@@ -152,11 +138,11 @@ class ApiServices {
 
     request.fields['id_spk'] = body['id_spk'].toString();
     request.fields['keterangan'] = body['keterangan'];
-    if (body['upload_data'] != null)
-      request.fields['upload_data'] = body['upload_data'];
+    if (body['upload_speed'] != null)
+      request.fields['upload_speed'] = body['upload_speed'];
 
-    if (body['download_data'] != null)
-      request.fields['download_data'] = body['download_data'];
+    if (body['download_speed'] != null)
+      request.fields['download_speed'] = body['download_speed'];
 
     request.files.add(await signCustomer);
     request.files.add(await signTeknisi);
@@ -166,7 +152,6 @@ class ApiServices {
     print(msg);
     Clipboard.setData(new ClipboardData(text: msg));
     return SpkResponse.fromJson(json.decode(msg));
-
   }
 
   Future<List<SpkDetail>> getJobDone() async {
@@ -176,12 +161,9 @@ class ApiServices {
     var id_teknisi = sp.get("USER_ID");
 
     var url = "${baseURL}listJobDone?id_teknisi=${id_teknisi}";
-    Map<String, String>  header = {
-      "Authorization" : "Bearer ${token}"
-    };
+    Map<String, String> header = {"Authorization": "Bearer ${token}"};
     print(header);
-    var response = await api.get(url,
-        headers: header);
+    var response = await api.get(url, headers: header);
 
     var jsonObject = json.decode(response.body);
     print(response.body);
@@ -196,12 +178,9 @@ class ApiServices {
     var token = sp.get("API_KEY");
 
     var url = "${baseURL}getProfile";
-    Map<String, String>  header = {
-      "Authorization" : "Bearer ${token}"
-    };
+    Map<String, String> header = {"Authorization": "Bearer ${token}"};
     print(header);
-    var response = await api.get(url,
-        headers: header);
+    var response = await api.get(url, headers: header);
 
     var jsonObject = json.decode(response.body);
     print(response.body);
@@ -209,6 +188,4 @@ class ApiServices {
     var body = LoginResponse.fromJson(jsonObject);
     return body.data;
   }
-
-
 }
