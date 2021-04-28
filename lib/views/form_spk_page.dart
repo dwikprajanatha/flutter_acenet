@@ -438,7 +438,7 @@ class _FormSPKState extends State<FormSPK> {
                               ),
 
                         spk.status.toString() == "1"
-                            ? Expanded(
+                            ? Container(
                                 child: Column(
                                 children: [
                                   Padding(
@@ -463,7 +463,7 @@ class _FormSPKState extends State<FormSPK> {
                                   ),
                                 ],
                               ))
-                            : Expanded(
+                            : Container(
                                 child: Column(
                                 children: [
                                   Padding(
