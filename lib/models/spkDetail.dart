@@ -25,7 +25,10 @@ class SpkDetail {
     String tgl_instalasi;
     String tgl_trial;
     List<Teknisi> teknisi;
-    
+    String ttdCustomer;
+    String ttdTeknisi;
+    String fotoBukti;
+
     factory SpkDetail.fromJson(Map<String,dynamic> json) => _$SpkDetailFromJson(json);
     Map<String, dynamic> toJson() => _$SpkDetailToJson(this);
 }

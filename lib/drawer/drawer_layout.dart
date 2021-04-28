@@ -57,9 +57,9 @@ class _myDrawerState extends State<myDrawer> {
           CustomListTile(
               icon: Icons.dashboard, title: "Dashboard", onTap: "/dashboard"),
           CustomListTile(
-              icon: Icons.work, title: "Today Task", onTap: "/today"),
+              icon: Icons.work, title: "Today Schedule", onTap: "/today"),
           CustomListTile(
-              icon: Icons.update, title: "Upcoming Task", onTap: "/upcoming"),
+              icon: Icons.update, title: "Upcoming Schedule", onTap: "/upcoming"),
           CustomListTile(icon: Icons.web, title: "Report", onTap: "/history"),
           CustomListTile(
               icon: Icons.account_circle, title: "Profile", onTap: "/profile"),

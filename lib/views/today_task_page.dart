@@ -39,7 +39,7 @@ class _TodayTaskPageState extends State<TodayTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Today Task")),
+      appBar: AppBar(title: Text("Today Schedule")),
       drawer: myDrawer(),
       body: Container(
         margin: EdgeInsets.all(10.0),

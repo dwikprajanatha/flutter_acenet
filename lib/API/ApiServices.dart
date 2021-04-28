@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiServices {
   //baseURL
   static String baseURL =
-      "http://phpstack-521315-1659119.cloudwaysapps.com/api/";
+      "http://test.lpk-resortkuta.com/api/";
 
   SharedPreferences sp;
 
@@ -83,11 +83,13 @@ class ApiServices {
 
     var token = sp.get("API_KEY");
     var id_teknisi = sp.get("USER_ID");
-    print(token);
+
     var url = "${baseURL}getDetailSPK?id_spk=${idSPK}";
     Map<String, String> header = {"Authorization": "Bearer ${token}"};
-    print(header);
+
     var response = await api.get(url, headers: header);
+
+    print(response.body);
 
     return SpkDetailResponse.fromJson(json.decode(response.body));
   }
@@ -136,6 +138,8 @@ class ApiServices {
       filename: "Teknisi.png",
     );
 
+    var fotoBukti = http.MultipartFile.fromPath('fotoBukti', body['foto'], filename: "fotoBukti.jpg");
+
     request.fields['id_spk'] = body['id_spk'].toString();
     request.fields['keterangan'] = body['keterangan'];
     if (body['upload_speed'] != null)
@@ -144,8 +148,13 @@ class ApiServices {
     if (body['download_speed'] != null)
       request.fields['download_speed'] = body['download_speed'];
 
+    if (body['jam_selesai'] != null){
+      request.fields['jam_selesai'] = body['jam_selesai'];
+    }
+
     request.files.add(await signCustomer);
     request.files.add(await signTeknisi);
+    request.files.add(await fotoBukti);
 
     var response = await request.send();
     String msg = await response.stream.bytesToString();

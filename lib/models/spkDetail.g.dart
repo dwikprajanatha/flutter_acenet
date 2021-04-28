@@ -29,7 +29,10 @@ SpkDetail _$SpkDetailFromJson(Map<String, dynamic> json) {
     ..teknisi = (json['teknisi'] as List)
         ?.map((e) =>
             e == null ? null : Teknisi.fromJson(e as Map<String, dynamic>))
-        ?.toList();
+        ?.toList()
+    ..ttdCustomer = json['ttdCustomer'] as String
+    ..ttdTeknisi = json['ttdTeknisi'] as String
+    ..fotoBukti = json['fotoBukti'] as String  ;
 }
 
 Map<String, dynamic> _$SpkDetailToJson(SpkDetail instance) => <String, dynamic>{
@@ -51,5 +54,8 @@ Map<String, dynamic> _$SpkDetailToJson(SpkDetail instance) => <String, dynamic>{
       'alamat': instance.alamat,
       'tgl_instalasi': instance.tgl_instalasi,
       'tgl_trial': instance.tgl_trial,
-      'teknisi': instance.teknisi
+      'teknisi': instance.teknisi,
+      'ttdCustomer': instance.ttdCustomer,
+      'ttdTeknisi': instance.ttdTeknisi,
+      'fotoBukti': instance.fotoBukti,
     };

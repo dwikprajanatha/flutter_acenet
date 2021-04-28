@@ -38,7 +38,7 @@ class _UpcomingTaskPageState extends State<UpcomingTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Upcoming Task")),
+      appBar: AppBar(title: Text("Upcoming Schedule")),
       drawer: myDrawer(),
       body: Container(
         margin: EdgeInsets.all(10.0),

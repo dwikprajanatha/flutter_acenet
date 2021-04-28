@@ -37,14 +37,13 @@ class _HomePageState extends State<HomePage> {
       title = notification['title'];
       body = notification['body'];
 
-      print(title);
-      print(body);
-
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
           'channel-fcm', 'Notification', 'Push Notification',
           importance: Importance.Max,
           priority: Priority.High,
-          ticker: 'ticker');
+          ticker: 'ticker',
+          playSound: true,
+      );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails();
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
@@ -68,7 +67,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future onSelectNotification(String dataJSON) async {
-    Navigator.pushNamed(context, "/upcoming");
+    Navigator.pushNamed(context, "/dashboard");
   }
 
   void getDataFcm(Map<String, dynamic> message) {
@@ -93,12 +92,12 @@ class _HomePageState extends State<HomePage> {
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
         final dynamic data = message['data'] ?? message;
-        Navigator.pushNamed(context, "/upcoming");
+        Navigator.pushNamed(context, "/dashboard");
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
         final dynamic data = message['data'] ?? message;
-        Navigator.pushNamed(context, "/upcoming");
+        Navigator.pushNamed(context, "/dashboard");
       },
       onBackgroundMessage: onBackgroundMessageHandler,
     );
@@ -131,10 +130,12 @@ class _HomePageState extends State<HomePage> {
         onSelectNotification: null);
 
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'channel-fcm', 'Notification', 'Push Notification',
-        importance: Importance.Max,
-        priority: Priority.High,
-        ticker: 'ticker');
+      'channel-fcm', 'Notification', 'Push Notification',
+      importance: Importance.Max,
+      priority: Priority.High,
+      ticker: 'ticker',
+      playSound: true,
+    );
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
@@ -218,7 +219,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: EdgeInsets.fromLTRB(5.0, 15.0, 0, 10.0),
                 child: Text(
-                  "Today Task",
+                  "Today Schedule",
                   style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
                 ),
               ),
